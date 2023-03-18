@@ -1,1 +1,3 @@
-# declarative_privacy_preserving-NAS
+# declarative_privacy_preserving
+
+Requirements: tensorflow_privacy, sklearn, pandas
