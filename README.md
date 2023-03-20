@@ -1,11 +1,5 @@
-# declarative_privacy_preserving
+# NAS for declarative_privacy_preserving
 
-Requirements: tensorflow_privacy, sklearn, pandas
+You may find examples for the search process with different accuracy and speed tradeoff in [NAS_Demo.ipynb](NAS_Demo.ipynb).
 
-## Hyper-Parameter Search results
-- LR=0.002, EPOCHS=5000, NOISE MULTIPLIER=O.3   ====> EPSILON=~43,000; ACC=0.99
-- LR=0.002, EPOCHS=5000, NOISE MULTIPLIER=0.35  ====> EPSILON=~24,000; ACC=0.97
-- LR=0.003, EPOCHS=5000, NOISE MULTIPLIER=0.35  ====> EPSILON=~24,000; ACC=0.99
-- LR=0.0025, EPOCHS=5000, NOISE MULTIPLIER=0.38 ====> EPSILON=~17,000; ACC=0.94
-- LR=0.0025, EPOCHS=5000, NOISE MULTIPLIER=0.4  ====> EPSILON=~14,000; ACC=0.91
-
+The search function can be found in [search.py](search.py) with detailed instruction. You can tune the argument `flops_balance_factor` to balance performance (CE Loss or MSE Loss) and speed (FLOPs). Larger `flops_balance_factor` leads to a faster network with worse performance. You can find examples with different `flops_balance_factor` in [NAS_Demo.ipynb](NAS_Demo.ipynb).
