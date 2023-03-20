@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -83,7 +84,7 @@ class SuperNet(nn.Module):
         return torch.matmul(self.flops_choices_normalized, gumbel_weights)
 
 # Initialize the neural network
-def search(x_train, y_train, out_dim, Loss_type='CE', hidden_size_choices = list(range(100,1000,10)), flops_balance_factor = 0.8, net_weight_lr = 0.0001, arch_lr = 0.01, num_epochs = 1000, search_freq = 20):
+def search(x_train, y_train, out_dim, Loss_type='CE', hidden_size_choices = list(range(100,1000,10)), flops_balance_factor = 0.2, net_weight_lr = 0.0001, arch_lr = 0.01, num_epochs = 5000, search_freq = 20):
     # out_dim: The ouput dimension of the network. It should be the number of classes for 'CE' loss
     # Loss_type: should be either 'CE' or 'MSE'
     # hidden_size_choices: The choices for the number of hidden units.
