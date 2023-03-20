@@ -2,6 +2,7 @@ import pickle
 import random
 from sklearn.preprocessing import StandardScaler
 from typings import (Embedding, Embeddings)
+from typing import Union
 from global_variables import frequency_range, date_range, location_range, training_size, countries
 import pandas as pd
 import numpy as np
@@ -16,7 +17,7 @@ random.seed(SEED)
 
 # Functions
 def get_passenger_database(
-    embed_original: list[Embedding],
+    embed_original: Union[list[Embedding], Embeddings],
     data_path: str = 'dataset/passenger_data/passenger.csv',
     names_path: str = 'dataset/names/query-names.txt',
 ) -> pd.DataFrame:
@@ -174,11 +175,11 @@ def synthesize_simple_database(embed_original: list[Embedding]):
 def create_simple_trainset(    
     embed_data: Embeddings, 
     id_data: list[int], 
-    location_data: list[int],
+    label_list: list[int],
 ) -> tuple[Embeddings, np.array, np.array]:
-    location_data = np.array(location_data)
-    labels = np.zeros((len(location_data), location_range), dtype=np.int32)
-    labels[np.arange(len(location_data)), location_data - 1] = 1
+    label_array = np.array(label_list)
+    labels = np.zeros((len(label_list), len(np.unique(label_array))), dtype=np.int32)
+    labels[np.arange(len(label_list)), label_array - 1] = 1
 
     X_train, sc = standardize_input(embed_data)
     return (X_train, np.array(id_data), labels, sc)

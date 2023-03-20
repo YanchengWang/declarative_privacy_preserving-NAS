@@ -18,7 +18,7 @@ from typings import *
 from global_variables import date_range, location_range, batch_size, noise_multiplier, epochs
 from sklearn.preprocessing import StandardScaler
 
-def train(
+def _train(
     X_train, 
     y_train,
     out_size: int,
@@ -72,10 +72,10 @@ def train(
     return (model, eps)
 
 
-def train_multi_output_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs):
+def _train_multi_output_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs):
     X_train, ids, y_train, sc = create_multi_output_trainset(embed_data, id_data, date_data, location_data)
     print(f'X_train: {X_train.shape}, labels: {y_train.shape}')
-    model, eps = train(
+    model, eps = _train(
         X_train, y_train, 
         out_size=location_range*date_range, 
         loss_func='BinaryCrossentropy',
@@ -83,10 +83,10 @@ def train_multi_output_model(embed_data, id_data, date_data, location_data, is_p
         **kwargs)
     return (model, eps, X_train, y_train, sc)
 
-def train_multi_input_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs):
+def _train_multi_input_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs):
     X_train, ids, y_train, sc =  create_multi_input_trainset(embed_data, id_data, date_data, location_data)
     print(f'X_train: {X_train.shape}, labels: {y_train.shape}')
-    model, eps =  train(
+    model, eps =  _train(
         X_train, y_train, 
         out_size=location_range, 
         loss_func='CategoricalCrossentropy',
@@ -94,35 +94,36 @@ def train_multi_input_model(embed_data, id_data, date_data, location_data, is_pr
         **kwargs)
     return (model, eps, X_train, y_train, sc)
 
-def train_simple(
+def _train_simple(
     embed_data: Embeddings, 
     id_data: list[int], 
     location_data: list[int], 
     is_privacy_preserve: bool,
+    out_size: int,
     **kwargs
 ) -> tuple[TFModel, tuple[int], Embeddings, np.array, StandardScaler]:
     X_train, ids, y_train, sc = create_simple_trainset(embed_data, id_data, location_data)
     print(f'X_train: {X_train.shape}, labels: {y_train.shape}')
-    model, eps =  train(
+    model, eps =  _train(
         X_train, y_train, 
-        out_size=location_range,
+        out_size=out_size,
         loss_func='CategoricalCrossentropy',
         is_privacy_preserve=is_privacy_preserve,
         **kwargs)
     return (model, eps, X_train, y_train, sc)
 
-def train_model(embed_data, id_data, date_data, location_data, user_selection, is_privacy_preserve, **kwargs):
+def train_model(embed_data, id_data, date_data, location_data, user_selection, is_privacy_preserve, out_size=location_range, **kwargs):
     if date_data is None: # simple_data
-        return train_simple(embed_data, id_data, location_data, is_privacy_preserve, **kwargs)
+        return _train_simple(embed_data, id_data, location_data, is_privacy_preserve, out_size, **kwargs)
     else:
         if user_selection == 'multi-output':
-            return train_multi_output_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs)
+            return _train_multi_output_model(embed_data, id_data, date_data, location_data, is_privacy_preserve, **kwargs)
         else:
-            return train_multi_input_model(embed_data, id_data, date_data, location_data,is_privacy_preserve, **kwargs)
+            return _train_multi_input_model(embed_data, id_data, date_data, location_data,is_privacy_preserve, **kwargs)
 
 
-def estimate_cost() -> tuple[dict]:
-    eps1 = compute_privacy_budget(128, clip, delta, sigma) 
+def estimate_cost(embed_dim: int = 128) -> tuple[dict]:
+    eps1 = compute_privacy_budget(embed_dim, clip, delta, sigma) 
     eps2 = compute_dp_sgd_privacy.compute_dp_sgd_privacy(
         n=training_size,
         batch_size=batch_size,

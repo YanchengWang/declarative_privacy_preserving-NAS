@@ -1,7 +1,6 @@
-from typing import TypeAlias
+from typing import Optional, Callable
+from typing_extensions import TypeAlias
 import numpy as np
-import tensorflow as tf
 
 Embedding: TypeAlias = np.array
 Embeddings: TypeAlias = np.array
-TFModel: TypeAlias = tf.keras.Model
