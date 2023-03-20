@@ -275,4 +275,4 @@ def search_CS_LS(x_train, y_train, out_dim, Loss_type='CE', hidden_size_choices 
                        .format(epoch+1, num_epochs, loss.item(), CE_loss.item(),
                                flops_loss.item(), accuracy * 100, selected_channel, selected_layer))
     
-    return selected_channel
+    return selected_channel, selected_layer
