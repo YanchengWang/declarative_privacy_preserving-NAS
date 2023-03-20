@@ -147,4 +147,4 @@ def search(x_train, y_train, out_dim, Loss_type='CE', hidden_size_choices = list
                     .format(epoch+1, num_epochs, loss.item(), CE_loss.item(),
                             flops_loss.item(), accuracy * 100, selected_channel))
     
-    return 
+    return selected_channel
